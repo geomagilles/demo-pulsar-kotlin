@@ -9,9 +9,12 @@ import me.gilles.events.LoanDeclined
 import me.gilles.pulsar.Pulsar
 import me.gilles.pulsar.sendEvent
 import org.apache.pulsar.client.api.PulsarClientException
+import org.slf4j.LoggerFactory
 
-fun main() = Pulsar.client().use { pulsarClient ->
-    runBlocking {
+fun main() = runBlocking {
+    val logger = LoggerFactory.getLogger("LoanCheckerService")
+
+    Pulsar.client().use { pulsarClient ->
         val consumer = Pulsar.loanEventsConsumerWithSchema(pulsarClient, "loan-checker")
 
         val producer = Pulsar.loanEventProducerWithSchema(pulsarClient)
@@ -22,7 +25,7 @@ fun main() = Pulsar.client().use { pulsarClient ->
             val message = try {
                 consumer.receiveAsync().await()
             } catch (e: PulsarClientException) {
-                println("Failed to receive message: ${e.message}")
+                logger.warn("Failed to receive message: $e")
                 continue
             }
 
@@ -44,7 +47,7 @@ fun main() = Pulsar.client().use { pulsarClient ->
 
                 consumer.acknowledge(message)
             } catch (e: Exception) {
-                println("Failed to process message ${message.messageId} $e")
+                logger.error("Failed to receive message: ${message.messageId} $e")
                 consumer.negativeAcknowledge(message)
                 continue
             }

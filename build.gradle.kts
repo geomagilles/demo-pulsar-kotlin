@@ -22,6 +22,7 @@ dependencies {
     implementation("org.apache.pulsar:pulsar-client:2.10.0")
 
     testImplementation(kotlin("test"))
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.3.0")
 }
 
 tasks.test {
@@ -39,5 +40,11 @@ application {
 task("checker", JavaExec::class) {
     group = "loan"
     mainClass.set("me.gilles.checker.LoanCheckerServiceKt")
+    classpath = sourceSets["main"].runtimeClasspath
+}
+
+task("notifier", JavaExec::class) {
+    group = "loan"
+    mainClass.set("me.gilles.checker.LoanNotifierServiceKt")
     classpath = sourceSets["main"].runtimeClasspath
 }
