@@ -5,9 +5,9 @@ import me.gilles.pulsar.sendEvent
 
 fun main() {
     Pulsar.client().use { pulsarClient ->
-        val producer = Pulsar.loanEventProducerWithSchema(pulsarClient)
+        val producer = Pulsar.loanEventProducer(pulsarClient)
 
-        repeat(1) {
+        repeat(10) {
             val loanApplied = LoanApplied(Loan.random())
 
             println("Sending ${loanApplied.loan.loanId}")

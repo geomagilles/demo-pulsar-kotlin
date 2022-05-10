@@ -20,11 +20,10 @@ data class Amount(
 ) {
     companion object {
         @TestOnly
-        fun random(): Amount {
-            val currency = Currency.getAvailableCurrencies().let { it.elementAt(Random.nextInt(it.size) - 1) }
-
-            return Amount((Math.random() * 100000).toInt(), currency)
-        }
+        fun random() = Amount(
+            Random.nextInt(1000000),
+            Currency.getAvailableCurrencies().toList().random()
+        )
     }
 }
 
